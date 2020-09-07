@@ -31,13 +31,43 @@ app = Flask(__name__)
 # Flask Routes
 #################################################
 
-@app.route("/api/v1.0/precipitation")
+@app.route("/")
 def welcome():
     """List all available api routes."""
     return (
         f"Available Routes:<br/>"
-        f"<a href='/api/v1.0/precipitation'></a><br/>"
-
+        f"<a href='/api/v1.0/precipitation'>precipitation</a><br/>"
+        f"<a href='/api/v1.0/stations'>stations</a><br/>"
     )
+@app.route("/api/v1.0/precipitation")
+def precipitation():
+    # Create our session (link) from Python to the DB
+    session = Session(engine)
+
+    # Query all measurements for precipitation
+    results = session.query(Measurement.date,Measurement.prcp).all()
+
+    session.close()
+
+    # Convert list of tuples into normal list
+    all_results = list(np.ravel(results))
+
+    return jsonify(all_results)
+
+@app.route("/api/v1.0/stations")
+def stations():
+    # Create our session (link) from Python to the DB
+    session = Session(engine)
+
+    # Query all measurements for precipitation
+    results = session.query(Station.id,Station.name).all()
+
+    session.close()
+
+    # Convert list of tuples into normal list
+    all_results = list(np.ravel(results))
+
+    return jsonify(all_results)
+
 if __name__ == "__main__":
     app.run(debug=True)
