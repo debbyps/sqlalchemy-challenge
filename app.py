@@ -39,6 +39,7 @@ def welcome():
         f"<a href='/api/v1.0/precipitation'>precipitation</a><br/>"
         f"<a href='/api/v1.0/stations'>stations</a><br/>"
         f"<a href='/api/v1.0/tobs'>tobs</a><br/>"
+        f"<a href='/api/v1.0/<start>'</a><br/>"
     )
 @app.route("/api/v1.0/precipitation")
 def precipitation():
@@ -86,6 +87,21 @@ def tobs():
     session.close()
 
     # Convert list of tuples into normal list
+    all_results = list(np.ravel(results))
+
+    return jsonify(all_results)
+
+@app.route("/api/v1.0/<start>")
+def temps_start(start):
+
+    # Create our session (link) from Python to the DB
+    session = Session(engine)
+
+    results = session.query(func.max(Measurement.tobs)).filter(Measurement.date>=start).all()
+
+    session.close()
+
+ # Convert list of tuples into normal list
     all_results = list(np.ravel(results))
 
     return jsonify(all_results)
