@@ -50,9 +50,15 @@ def precipitation():
     session.close()
 
     # Convert list of tuples into normal list
-    all_results = list(np.ravel(results))
+    # Create a dictionary from the row data and append to a list of all_passengers
+    all_prcp = []
+    for date, prcp in results:
+        prcp_dict = {}
+        prcp_dict["date"] = date
+        prcp_dict["prcp"] = prcp
+        all_prcp.append(prcp_dict)
 
-    return jsonify(all_results)
+    return jsonify(all_prcp)
 
 @app.route("/api/v1.0/stations")
 def stations():
