@@ -3,7 +3,7 @@ import numpy as np
 import sqlalchemy
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
-from sqlalchemy import create_engine, func
+from sqlalchemy import create_engine, func, and_
 
 from flask import Flask, jsonify
 
@@ -38,6 +38,7 @@ def welcome():
         f"Available Routes:<br/>"
         f"<a href='/api/v1.0/precipitation'>precipitation</a><br/>"
         f"<a href='/api/v1.0/stations'>stations</a><br/>"
+        f"<a href='/api/v1.0/tobs'>tobs</a><br/>"
     )
 @app.route("/api/v1.0/precipitation")
 def precipitation():
@@ -45,11 +46,10 @@ def precipitation():
     session = Session(engine)
 
     # Query all measurements for precipitation
-    results = session.query(Measurement.date,Measurement.prcp).all()
+    results = session.query(Measurement.date,Measurement.prcp).filter(and_(Measurement.date >= '2016-08-23',Measurement.date <='2017-08-23')).all()
 
     session.close()
 
-    # Convert list of tuples into normal list
     # Create a dictionary from the row data and append to a list of all_passengers
     all_prcp = []
     for date, prcp in results:
@@ -75,5 +75,21 @@ def stations():
 
     return jsonify(all_results)
 
+@app.route("/api/v1.0/tobs")
+def tobs():
+    # Create our session (link) from Python to the DB
+    session = Session(engine)
+
+    # Query all measurements for precipitation
+    results = session.query(Measurement.date, Measurement.tobs).filter(and_(Measurement.date >= '2016-08-23',Measurement.date <='2017-08-23')).all()
+
+    session.close()
+
+    # Convert list of tuples into normal list
+    all_results = list(np.ravel(results))
+
+    return jsonify(all_results)
+
 if __name__ == "__main__":
     app.run(debug=True)
+
