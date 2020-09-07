@@ -97,7 +97,22 @@ def temps_start(start):
     # Create our session (link) from Python to the DB
     session = Session(engine)
 
-    results = session.query(func.max(Measurement.tobs)).filter(Measurement.date>=start).all()
+    results = session.query(func.max(Measurement.tobs),func.min(Measurement.tobs),func.avg(Measurement.tobs)).filter(Measurement.date>=start).all()
+
+    session.close()
+
+ # Convert list of tuples into normal list
+    all_results = list(np.ravel(results))
+
+    return jsonify(all_results)
+
+@app.route("/api/v1.0/<start>/<end>")
+def temps_start_end(start,end):
+
+    # Create our session (link) from Python to the DB
+    session = Session(engine)
+
+    results = session.query(func.max(Measurement.tobs),func.min(Measurement.tobs),func.avg(Measurement.tobs)).filter(and_(Measurement.date>=start,Measurement.date<=end)).all()
 
     session.close()
 
