@@ -45,12 +45,12 @@ def precipitation():
     # Create our session (link) from Python to the DB
     session = Session(engine)
 
-    # Query all measurements for precipitation
+    # Query all measurements for precipitation within last year
     results = session.query(Measurement.date,Measurement.prcp).filter(and_(Measurement.date >= '2016-08-23',Measurement.date <='2017-08-23')).all()
 
     session.close()
 
-    # Create a dictionary from the row data and append to a list of all_passengers
+    # Create a dictionary from the row data and append to a list of all_prcp
     all_prcp = []
     for date, prcp in results:
         prcp_dict = {}
@@ -81,7 +81,7 @@ def tobs():
     session = Session(engine)
 
     # Query all measurements for precipitation
-    results = session.query(Measurement.date, Measurement.tobs).filter(and_(Measurement.date >= '2016-08-23',Measurement.date <='2017-08-23')).all()
+    results = session.query(Measurement.date, Measurement.tobs).filter(and_(Measurement.station == 'USC00519281',Measurement.date >= '2016-08-23',Measurement.date <='2017-08-23')).all()
 
     session.close()
 
