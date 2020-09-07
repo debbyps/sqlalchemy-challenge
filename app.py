@@ -39,7 +39,6 @@ def welcome():
         f"<a href='/api/v1.0/precipitation'>precipitation</a><br/>"
         f"<a href='/api/v1.0/stations'>stations</a><br/>"
         f"<a href='/api/v1.0/tobs'>tobs</a><br/>"
-        f"<a href='/api/v1.0/<start>'</a><br/>"
     )
 @app.route("/api/v1.0/precipitation")
 def precipitation():
